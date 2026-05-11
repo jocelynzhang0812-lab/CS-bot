@@ -293,6 +293,49 @@ python -m pytest tests/test_submission_rules.py -v
 
 ---
 
+## 🏗 检索与意图优化架构（v2）
+
+基于 `cs_agent_tasklist` 任务清单重构的检索质量 + 意图识别架构。
+
+### 新增模块
+
+| 模块 | 路径 | 说明 |
+|------|------|------|
+| **Chunk 切割** | `retrieval/chunker.py` | `SemanticChunker`，语义感知切割，512/64 overlap |
+| **HyDE** | `retrieval/hyde_retriever.py` | 假设文档嵌入，解决用词差异导致的 MISSING |
+| **Ensemble** | `retrieval/ensemble_retriever.py` | BM25 + 向量混合，权重 0.4/0.6 |
+| **统一检索入口** | `retrieval/retrieve.py` | `Retriever`，阈值过滤（默认 0.70），空结果走 fallback |
+| **意图分类器** | `intent/classifier.py` | `IntentClassifier`，4 类标签，规则 + LLM 双层 |
+| **槽位提取器** | `intent/slot_extractor.py` | `SlotExtractor`，6 个字段，规则 + LLM 双层 |
+| **主路由** | `agent_router.py` | `AgentRouter`，按意图路由到不同处理分支 |
+| **反馈收集器** | `csbot/feedback/collector.py` | 每条消息自动入表，JSON Schema 约束 |
+
+### 新增测试
+
+| 测试 | 路径 | 覆盖 |
+|------|------|------|
+| 检索测试 | `tests/test_retrieval.py` | 正常命中 10 + 边界 5 + 过滤 5 |
+| 意图测试 | `tests/test_intent.py` | 标准 20 + 边界 10 |
+| 槽位测试 | `tests/test_slots.py` | 完整 5 + 缺失 5 |
+| 端到端 | `tests/test_e2e.py` | 4 条 smoke case |
+
+### 新增脚本
+
+| 脚本 | 路径 | 用法 |
+|------|------|------|
+| 召回诊断 | `scripts/diagnose_retrieval.py` | `python scripts/diagnose_retrieval.py` |
+
+### Golden Queries
+
+`tests/queries_golden.txt`：20 条真实用户问题，用于召回质量评估。
+
+### 诊断文档
+
+`docs/retrieval_diagnosis.md`：人工标注模板（OK / WRONG / MISSING / EMPTY）。
+`docs/chunking_baseline.md`：新旧切割方式对比。
+
+---
+
 ## 🤝 贡献指南
 
 1. Fork 本仓库
@@ -306,3 +349,14 @@ python -m pytest tests/test_submission_rules.py -v
 - 新增功能补充对应测试用例
 - 遵循现有代码风格
 
+---
+
+## 📄 许可证
+
+本项目为 Kimi 内部项目，未经许可不得对外传播。
+
+---
+
+<p align="center">
+  Made with ❤️ by Moonshot AI · Kimi Claw Team
+</p>
