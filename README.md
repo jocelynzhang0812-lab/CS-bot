@@ -349,14 +349,3 @@ python -m pytest tests/test_submission_rules.py -v
 - 新增功能补充对应测试用例
 - 遵循现有代码风格
 
----
-
-## 📄 许可证
-
-本项目为 Kimi 内部项目，未经许可不得对外传播。
-
----
-
-<p align="center">
-  Made with ❤️ by Moonshot AI · Kimi Claw Team
-</p>
